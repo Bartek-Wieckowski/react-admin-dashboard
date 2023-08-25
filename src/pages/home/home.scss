@@ -1,1 +1,7 @@
-.home{background-color: purple;}
+.home {
+  display: flex;
+
+  .home-container {
+    flex: 6;
+  }
+}
