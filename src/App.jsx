@@ -5,10 +5,13 @@ import { List } from "./pages/list/List";
 import { New } from "./pages/new/New";
 import { Single } from "./pages/single/Single";
 import { userInputs, productInputs } from "./formsdata";
+import "./style/darkmode.scss";
+import { useDarkMode } from "./context/DarkModeContext";
 
 function App() {
+  const { darkMode } = useDarkMode();
   return (
-    <div className="app">
+    <div className={darkMode ? "app dark" : "app"}>
       <BrowserRouter>
         <Routes>
           <Route path="/">
