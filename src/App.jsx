@@ -7,15 +7,16 @@ import { Single } from "./pages/single/Single";
 import { userInputs, productInputs } from "./formsdata";
 import "./style/darkmode.scss";
 import { useDarkMode } from "./context/DarkModeContext";
+import { useAuthContext } from "./context/AuthContext";
 
 function App() {
   const { darkMode } = useDarkMode();
-
-  const currentUser = true;
+  const { currentUser } = useAuthContext();
 
   function RequireAuth({ children }) {
     return currentUser ? children : <Navigate to="/login" />;
   }
+  console.log(currentUser);
 
   return (
     <div className={darkMode ? "app dark" : "app"}>
