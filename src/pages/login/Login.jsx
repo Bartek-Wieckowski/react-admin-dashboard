@@ -35,7 +35,7 @@ export const Login = () => {
         <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
         <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
         <button type="submit">Login</button>
-        {error && <span>Wrong email or password!</span>}
+        {error && <span className="errorMsg">Wrong email or password!</span>}
       </form>
     </div>
   );
