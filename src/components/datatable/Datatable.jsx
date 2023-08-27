@@ -3,7 +3,7 @@ import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { userColumns, userRows } from "../../datatableusers";
 import { Link } from "react-router-dom";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseconfig";
 
 export default function DataTable() {
@@ -25,8 +25,13 @@ export default function DataTable() {
     fetchData();
   }, []);
 
-  function handleDelete(id) {
-    setData(data.filter((item) => item.id !== id));
+  async function handleDelete(id) {
+    try {
+      await deleteDoc(doc(db, "users", id));
+      setData(data.filter((item) => item.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const columnsWithAction = [
