@@ -7,7 +7,11 @@ export const userColumns = [
     renderCell: (params) => {
       return (
         <div className="cell-with-img">
-          <img className="cell-img" src={params.row.img} alt="img" />
+          <img
+            className="cell-img"
+            src={params.row.img || "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"}
+            alt="img"
+          />
           {params.row.username}
         </div>
       );
@@ -19,8 +23,13 @@ export const userColumns = [
     width: 230,
   },
   {
-    field: "age",
-    headerName: "Age",
+    field: "address",
+    headerName: "Address",
+    width: 100,
+  },
+  {
+    field: "country",
+    headerName: "Country",
     width: 100,
   },
   {
