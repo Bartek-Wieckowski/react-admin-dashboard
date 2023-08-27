@@ -1,16 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./new.scss";
 import { Sidebar } from "../../components/sidebar/Sidebar";
 import { Navbar } from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import { db, auth } from "../../firebaseconfig";
+import { db, auth, storage } from "../../firebaseconfig";
 import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export const New = ({ inputs, title }) => {
   const [file, setFile] = useState("");
   const [data, setData] = useState({});
   const [error, setError] = useState(false);
+  const [percentage, setPercentage] = useState(null);
+
+  useEffect(() => {
+    const uploadFile = () => {
+      const nameImg = new Date().getTime() + file.name;
+      const storageRef = ref(storage, nameImg);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          setPercentage(progress);
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+            default:
+              throw new Error("Unkwnon ");
+          }
+        },
+        (error) => {
+          console.error(error);
+          setError(true);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setData((prevData) => ({ ...prevData, img: downloadURL }));
+          });
+        }
+      );
+    };
+
+    file && uploadFile();
+  }, [file]);
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -78,8 +118,10 @@ export const New = ({ inputs, title }) => {
                 </div>
               ))}
               <div className="flex-wrapp">
-              {error && <span className="errorMsg">Something went wrong!</span>}
-              <button type="submit">Send</button>
+                {error && <span className="errorMsg">Something went wrong!</span>}
+                <button type="submit" disabled={percentage !== null && percentage < 100}>
+                  Send
+                </button>
               </div>
             </form>
           </div>
